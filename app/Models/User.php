@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
+use App\Scopes\UserIsActiveScope;
 
 class User extends Authenticatable
 {
@@ -42,8 +44,33 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new UserIsActiveScope);
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class,'user_id');
+    }
+
+    public function getFullNameAttribute($value)
+    {
+        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+    }
+
+    public function setUserNameAttribute($username)
+    {
+        $this->attributes['username'] = Str::slug($username);
+    }
+
+    public function scopeIsAdmin($query)
+    {
+        return $query->where('isAdmin', true);
     }
 }
