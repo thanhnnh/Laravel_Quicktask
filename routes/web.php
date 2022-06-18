@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
@@ -28,3 +29,7 @@ Route::get('tasks/{id}', [TaskController::class, 'show'])->name('tasks.show');
 Route::put('tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
 Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 Route::get('tasks/{id}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
